@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  find_web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/datagovuk_find
+    ports:
+      - "3000:3000"
+    links:
+      - find_elasticsearch
+    environment:
+      - ES_HOST=http://find_elasticsearch:9200
+
+  find_elasticsearch:
+    image: elasticsearch:7.3.1
+    environment:
+      - discovery.type=single-node
